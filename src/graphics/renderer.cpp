@@ -39,15 +39,14 @@ Renderer::Renderer(Window& window_, RGBA clearColour_, uint64_t viewId_): window
   Clear();
 }
 
-void Renderer::SetProjPerspective(float fov = glm::radians(45.0f), float aspect_ratio = 800.0f/600.0f, float near_clip = 0.1f, float far_clip = 100.0f) {
+void Renderer::SetProjPerspective(float fov, float aspect_ratio, float near_clip, float far_clip) {
   proj = glm::perspective(fov, aspect_ratio, near_clip, far_clip);
 }
-void Renderer::SetProjOrtho() {
-  proj = glm::ortho();
+void Renderer::SetProjOrtho(float width, float height, float near_clip, float far_clip) {
+  proj = glm::ortho(-width/2.0f, width/2.0f, height/2.0f, -height/2.0f, near_clip, far_clip);
 }
 
 void Renderer::Clear() {
-  INFO("clear");
   glClearColor(clearColour.R, clearColour.G, clearColour.B, clearColour.A);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
@@ -68,13 +67,13 @@ void Renderer::Frame(std::vector<std::reference_wrapper<origami::components::Pro
   view = glm::rotate(view, -camRot[1], glm::vec3(0.0, 1.0, 0.0));
   view = glm::rotate(view, -camRot[2], glm::vec3(0.0, 0.0, 1.0));
   for (origami::components::Program program: programs) {
-    INFO("program");
     int loc = glGetUniformLocation(program.program, "view");
     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(view));
-    INFO(loc);
     loc = glGetUniformLocation(program.program, "proj");
+    // proj = glm::scale(glm::mat4(1.0f), glm::vec3(0.9f));
+    // SetProjOrtho();
+    SetProjPerspective();
     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(proj));
-    INFO(loc);
     // loc = glGetUniformLocation(program.program, "camPos");
     // glUniformVec3fv(loc, 1, GL_FALSE, glm::value_ptr(proj));
   }

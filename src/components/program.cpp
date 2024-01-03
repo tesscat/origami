@@ -27,7 +27,6 @@ void Program::SetInt(const std::string &name, int value) const {
 }
 
 void Program::Submit(uint64_t _view) {
-  INFO("glUsingProgram");
   glUseProgram(program);
 };
 Program::~Program() {

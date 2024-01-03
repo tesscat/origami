@@ -8,11 +8,6 @@ namespace components {
 Sprite::Sprite(origami::resources::Texture& texture_, unsigned int textureUnit, const char* uniformName, origami::components::Program program_) : texture {texture_}, sampler {texture, textureUnit, uniformName}, program {program_} {}
 
 void Sprite::Submit(graphics::Renderer& renderer) {
-  // INFO(transform.trans[0][0]);
-  // auto k = transform.trans;
-  // for (int i; i < 4; i++) {
-  //   INFO("{} {} {} {}", k[i][0],k[i][1],k[i][2],k[i][3]);
-  // }
   texture.Submit();
   program.Submit(renderer.viewId);
   transform.Apply(program);

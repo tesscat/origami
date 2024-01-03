@@ -11,6 +11,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <origami/graphics/window.hpp>
+#include <math.h>
 
 namespace origami {
 namespace graphics {
@@ -41,8 +42,8 @@ public:
 
   ~Renderer();
 
-  void SetProjPerspective(float fov = glm::radians(45.0f), float aspect_ratio = 800.0f/600.0f, float near_clip = 0.1f, float far_clip = 100.0f);
-  void SetProjOrtho();
+  void SetProjPerspective(float fov = M_PI/4.0f, float aspect_ratio = 800.0f/600.0f, float near_clip = 0.1f, float far_clip = 100.0f);
+  void SetProjOrtho(float width = 800.0f, float height = 600.0f, float near_clip = 0.1f, float far_clip = 100.0f);
   
   RGBA clearColour;
   void Clear();

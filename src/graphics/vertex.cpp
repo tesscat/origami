@@ -71,7 +71,6 @@ PosTexcoordNormalVertexContainer::~PosTexcoordNormalVertexContainer() {
 }
 
 void PosTexcoordNormalVertexContainer::SetBuffers() {
-  INFO("setting buffers");
   // program.Submit(0);
   glBindVertexArray(VAO);
   // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);

@@ -14,6 +14,7 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 add_subdirectory("vendor/glfw")
 add_subdirectory("vendor/glm")
+add_subdirectory("vendor/glad")
 
 find_package(spdlog REQUIRED)
 
@@ -34,7 +35,7 @@ target_include_directories(${PROJECT_NAME}
   )
 
 # TODO: conditionally link platform-specific libs (-lGL -lX11 -lpthread -lXrandr -lXi -ldl)
-target_link_libraries(origami spdlog::spdlog glfw glad glm)
+target_link_libraries(origami spdlog::spdlog glfw glm glad)
 
 IF (UNIX) 
   add_compile_definitions(PLATFORM_NIX)

@@ -77,7 +77,6 @@ bool Window::ShouldClose() {
 }
 
 void Window::UpdateBuffer() {
-  INFO("swapping window buffers");
   glfwSwapBuffers(handle);
 }
 

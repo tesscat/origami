@@ -16,7 +16,7 @@ public:
   // bx::Vec3 rotation = {0, 0, 0};
   // bx::Vec3 position = {0, 0, 0};
   glm::vec3 position = {0, 0, 0};
-  glm::vec3 scale = {0, 0, 0};
+  glm::vec3 scale = {1.0f, 1.0f, 1.0f};
   glm::vec3 rotation = {0, 0, 0};
 
   glm::mat4 trans = glm::mat4(1.0f);

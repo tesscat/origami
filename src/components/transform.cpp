@@ -24,7 +24,8 @@ void Transform::Calculate() {
 
 void Transform::Apply(origami::components::Program program) {
   unsigned int transLoc = glGetUniformLocation(program.program, "transform");
-  INFO("tloc {}", program.program);
+  // trans = glm::mat4(1.0f);
+  // trans = glm::translate(trans, glm::vec3(0.1f, 0.1f, 0.0f));
   glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
   // Calculate();
   // bgfx::setTransform(Calculate().data());
