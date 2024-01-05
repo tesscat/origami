@@ -1,6 +1,7 @@
 build
 *.out
 *.o
+.cache
 
 # CMake
 CMakeLists.txt.user

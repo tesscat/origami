@@ -33,9 +33,10 @@ class Renderer {
   glm::mat4 proj;
 public:
   glm::vec3 camPos = {0, 0, 0};
-  glm::vec3 camRot = {0, 0, 0};
+  glm::vec3 camFront = {0, 0, 1.0f};
+  glm::vec3 camUp = {0, 1.0f, 0};
   uint64_t viewId;
-  float fov = 60;
+  // float fov = 60;
   Renderer(Window& window);
   Renderer(Window& window, RGBA ClearColour);
   Renderer(Window& window, RGBA ClearColour, uint64_t view);

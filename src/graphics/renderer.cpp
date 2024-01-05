@@ -61,11 +61,14 @@ void Renderer::SetViewport() {
 
 void Renderer::Frame(std::vector<std::reference_wrapper<origami::components::Program>> programs) {
   // camPos.Calculate();
-  glm::mat4 view = glm::mat4(1.0f);
-  view = glm::translate(view, -camPos);
-  view = glm::rotate(view, -camRot[0], glm::vec3(1.0, 0.0, 0.0));
-  view = glm::rotate(view, -camRot[1], glm::vec3(0.0, 1.0, 0.0));
-  view = glm::rotate(view, -camRot[2], glm::vec3(0.0, 0.0, 1.0));
+  
+  // INFO("camera: {}/{}/{} {}/{}/{} {}/{}/{}", camPos.x, camPos.y, camPos.z, camFront.x, camFront.y, camFront.z, camUp.x, camUp.y, camUp.z);
+  glm::mat4 view = glm::lookAt(camPos, camFront + camPos, camUp);
+  // view = glm::translate(view, -camPos);
+  // view = glm::rotate(view, -camFront[0], glm::vec3(1.0, 0.0, 0.0));
+  // view = glm::rotate(view, -camFront[1], glm::vec3(0.0, 1.0, 0.0));
+  // view = glm::rotate(view, -camFront[2], glm::vec3(0.0, 0.0, 1.0));
+  // view *= -1.0f;
   for (origami::components::Program program: programs) {
     int loc = glGetUniformLocation(program.program, "view");
     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(view));

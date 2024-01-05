@@ -1,3 +1,5 @@
+#include "GLFW/glfw3.h"
+#include "origami/events/mouseEvent.hpp"
 #include "origami/log.hpp"
 #include <origami/events/event.hpp>
 #include <origami/graphics/window.hpp>
@@ -24,7 +26,7 @@ const char* GraphicsCreateError::what() const noexcept {
   return err.c_str();
 }
 
-void Window::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) { // TODO: optimise, this is a hot fn
+void Window::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) { // TODO: optimise, this is a busy fn
   Window* wind = (Window*) glfwGetWindowUserPointer(window);
   if (action == GLFW_PRESS) {
     KeyPress keyPress { scancode, window };
@@ -38,7 +40,21 @@ void Window::KeyCallback(GLFWwindow* window, int key, int scancode, int action, 
   }
 }
 
-Window::Window(EventHandler& eventHandler_, bool resizable_, int width_, int height_, std::string title_) noexcept(false) : eventHandler { eventHandler_ }, resizable { resizable_ }, width { width_ }, height { height_ }, title { title_ } {
+void Window::MouseCallback(GLFWwindow* window, double xpos, double ypos) {
+  Window* wind = (Window*) glfwGetWindowUserPointer(window);
+  float xoffset = xpos - wind->lastXEvent;
+  float yoffset = ypos - wind->lastYEvent;
+  wind->lastXEvent = xpos;
+  wind->lastYEvent = ypos;
+
+  wind->firstMouse = false;
+
+  MouseMove mouseMove {xoffset, yoffset};
+  wind->eventHandler.Fire(mouseMove);
+  wind->eventHandler.FireCategory(mouseMove);
+}
+
+Window::Window(EventHandler& eventHandler_, bool resizable_, int width_, int height_, std::string title_) noexcept(false) : eventHandler { eventHandler_ }, resizable { resizable_ }, width { width_ }, height { height_ }, title { title_ }, lastXEvent{width_/2.0f}, lastYEvent{height_/2.0f}, lastX{width_/2.0f}, lastY{height_/2.0f}, mouseX{width_/2.0f}, mouseY{height_/2.0f} {
   // TODO: get errors from GLFW
 
   // Set resizable
@@ -58,15 +74,17 @@ Window::Window(EventHandler& eventHandler_, bool resizable_, int width_, int hei
   glfwSetWindowUserPointer(handle, this);
   // Set the key-callback
   glfwSetKeyCallback(handle, KeyCallback);
+  // set mouse-callback
+  glfwSetCursorPosCallback(handle, MouseCallback);
 }
 
-Window::Window(Window&& window) : handle { std::exchange(window.handle, nullptr) }, eventHandler { window.eventHandler }, resizable { window.resizable }, width { window.width }, height { window.height }, title { window.title } {
-  glfwSetWindowUserPointer(handle, this);
-}
-
-Window::Window(Window& window) : handle { std::exchange(window.handle, nullptr) }, eventHandler { window.eventHandler }, resizable { window.resizable }, width { window.width }, height { window.height }, title { window.title } {
-  glfwSetWindowUserPointer(handle, this);
-}
+// Window::Window(Window&& window) : handle { std::exchange(window.handle, nullptr) }, eventHandler { window.eventHandler }, resizable { window.resizable }, width { window.width }, height { window.height }, title { window.title } {
+//   glfwSetWindowUserPointer(handle, this);
+// }
+//
+// Window::Window(Window& window) : handle { std::exchange(window.handle, nullptr) }, eventHandler { window.eventHandler }, resizable { window.resizable }, width { window.width }, height { window.height }, title { window.title } {
+//   glfwSetWindowUserPointer(handle, this);
+// }
 
 void Window::PollInputs() {
   glfwPollEvents();
@@ -80,8 +98,26 @@ void Window::UpdateBuffer() {
   glfwSwapBuffers(handle);
 }
 
+void Window::UpdateSituation() {
+  lastX = mouseX;
+  lastY = mouseY;
+  glfwGetCursorPos(handle, &mouseX, &mouseY);
+  if (firstMouse) {
+    lastX = mouseX;
+    lastY = mouseY;
+  }
+}
+
 void Window::ActivateContext() {
   glfwMakeContextCurrent(handle);
+}
+
+void Window::CaptureCursor() {
+  glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void Window::UncaptureCursor() {
+  glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
 Window::~Window() {

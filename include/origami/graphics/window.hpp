@@ -3,6 +3,7 @@
 
 #define GLFW_INCLUDE_NONE
 #include <origami/events/firer.hpp>
+// #include <origami/input/axis.hpp>
 // need to include glad before glfw3
 // #include <glad/glad.h>
 // #include <GLFW/glfw3.h>
@@ -10,6 +11,11 @@
 #include <string>
 
 namespace origami {
+
+namespace input {
+class MouseAxis;
+}
+
 namespace graphics {
   /**
    * * @brief The error callback for GLFW. This function is _only_ called by GLFW and you should not call it
@@ -44,9 +50,10 @@ public:
 };
 
 class Window {
+  friend class input::MouseAxis;
 
   /**
-   * @brief The keyy callback that is called for every key interaction
+   * @brief The key callback that is called for every key interaction
    *
    * @param window The window it was called for
    * @param key The key that was pressed
@@ -55,7 +62,12 @@ class Window {
    * @param mods Any modifier keys
    */
   static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void MouseCallback(GLFWwindow* window, double xpos, double ypos);
   EventHandler& eventHandler;
+  float lastXEvent, lastYEvent;
+  double lastX, lastY;
+  double mouseX, mouseY;
+  bool firstMouse = true;
 public:
   /// NULLABLE
   GLFWwindow* handle;
@@ -69,8 +81,8 @@ public:
    * @param title The textual title of the window
    */
   Window(EventHandler& eventHandler, bool resizeable, int width, int height, std::string title) noexcept(false);
-  Window(Window&& window);
-  Window(Window& window);
+  // Window(Window&& window);
+  // Window(Window& window);
   ~Window();
 
   // TODO: setters & getters
@@ -92,9 +104,23 @@ public:
   void UpdateBuffer();
 
   /**
+   * @brief Updates context for this window (like mouse-position). Should be called once per frame
+   */
+  void UpdateSituation();
+
+  /**
    * @brief Makes the context of this window the current context
    */
   void ActivateContext();
+
+  /**
+   * @brief Captures (hides and prevents it leaving the window) the cursor
+   */
+  void CaptureCursor();
+  /**
+   * @brief Uncaptures the cursor
+   */
+  void UncaptureCursor();
   
   // Read-only
   bool resizable = false;
