@@ -18,7 +18,7 @@ const std::vector<float> PosNormalTexcoordVertex::Packed() {
 }
 
 PosTexcoordNormalVertexContainer::PosTexcoordNormalVertexContainer(
-    std::vector<PosNormalTexcoordVertex> posColourVerticies_, std::vector<unsigned int> triangles_, components::Program program_) : posTexcoordVerticies {posColourVerticies_}, triangles {triangles_}, program{program_} {
+    std::vector<PosNormalTexcoordVertex> posColourVerticies_, std::vector<unsigned int> triangles_) : posTexcoordVerticies {posColourVerticies_}, triangles {triangles_} {
   // for (auto vertex: posTexcoordVerticies) {
   //   INFO("V");
   //   std::vector<float> packed = vertex.Packed();
@@ -60,7 +60,7 @@ PosTexcoordNormalVertexContainer::PosTexcoordNormalVertexContainer(
   glBindVertexArray(0);
 }
 
-PosTexcoordNormalVertexContainer::PosTexcoordNormalVertexContainer(PosTexcoordNormalVertexContainer&& container) : /* vertexLayout {container.vertexLayout}, */ /* vbh {container.vbh}, ibh {container.ibh}, */ posTexcoordVerticies {container.posTexcoordVerticies}, triangles {container.triangles}, program{container.program} {
+PosTexcoordNormalVertexContainer::PosTexcoordNormalVertexContainer(PosTexcoordNormalVertexContainer&& container) : /* vertexLayout {container.vertexLayout}, */ /* vbh {container.vbh}, ibh {container.ibh}, */ posTexcoordVerticies {container.posTexcoordVerticies}, triangles {container.triangles} {
   // container.ibh = BGFX_INVALID_HANDLE;
   // container.vbh = BGFX_INVALID_HANDLE;
 }

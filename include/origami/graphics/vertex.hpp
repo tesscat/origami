@@ -24,14 +24,13 @@ public:
   unsigned int VBO;
   unsigned int VAO;
   unsigned int EBO;
-  components::Program program;
   std::vector<PosNormalTexcoordVertex> posTexcoordVerticies;
   
   // TODO: do we need this
   std::vector<unsigned int> triangles;
   // std::vector<float> verticies;
 
-  PosTexcoordNormalVertexContainer(std::vector<PosNormalTexcoordVertex> posColourVerticies, std::vector<unsigned int> triangles, components::Program program);
+  PosTexcoordNormalVertexContainer(std::vector<PosNormalTexcoordVertex> posColourVerticies, std::vector<unsigned int> triangles);
   ~PosTexcoordNormalVertexContainer();
 
   PosTexcoordNormalVertexContainer(const PosTexcoordNormalVertexContainer&) = delete;

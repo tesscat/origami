@@ -1,3 +1,4 @@
+#include "origami/components/program.hpp"
 #include "origami/graphics/renderer.hpp"
 #include "origami/resources/shader.hpp"
 #include <origami/components/sprite.hpp>
@@ -5,10 +6,10 @@
 
 namespace origami {
 namespace components {
-Sprite::Sprite(origami::resources::Texture& texture_, unsigned int textureUnit, const char* uniformName, origami::components::Program program_) : texture {texture_}, sampler {texture, textureUnit, uniformName}, program {program_} {}
+Sprite::Sprite(origami::resources::Texture& texture_, unsigned int textureUnit, const char* uniformName) : texture {texture_}, sampler {texture, textureUnit, uniformName} {}
 
-void Sprite::Submit(graphics::Renderer& renderer) {
-  texture.Submit();
+void Sprite::Submit(graphics::Renderer& renderer, components::Program program) {
+  texture.Submit(program);
   program.Submit(renderer.viewId);
   transform.Apply(program);
   // transform.Apply();
@@ -43,7 +44,7 @@ Sprite& Sprite::operator=(const Sprite& other) {
 }
 
 // TODO: proper init
-Sprite::Sprite(Sprite&& other) : triangles {std::move(other.triangles)}, container {std::move(other.container)}, transform {std::move(other.transform)}, texture {other.texture}, sampler {std::move(other.sampler)}, program {std::move(other.program)} {
+Sprite::Sprite(Sprite&& other) : triangles {std::move(other.triangles)}, container {std::move(other.container)}, transform {std::move(other.transform)}, texture {other.texture}, sampler {std::move(other.sampler)} {
     std::copy(&other.verticies[0], &other.verticies[3], verticies);
   }
 

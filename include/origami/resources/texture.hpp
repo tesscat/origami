@@ -3,6 +3,7 @@
 
 // #include <origami/graphics/texturesampler.hpp>
 // #include <bgfx/bgfx.h>
+#include "origami/components/program.hpp"
 #include <exception>
 #include <string>
 #include <filesystem>
@@ -20,7 +21,7 @@ public:
   Texture(std::filesystem::path filePath, std::string type) noexcept(false);
   ~Texture();
 
-  void Submit();
+  void Submit(components::Program program);
 
   // graphics::TextureSampler CreateSampler(unsigned int textureUnit, std::string uniformName);
 

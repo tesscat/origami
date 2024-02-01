@@ -4,33 +4,40 @@
 
 namespace origami {
 namespace components {
+
+TexOffsLocations::TexOffsLocations(unsigned int program) {
+    txRelWidthLoc = glGetUniformLocation(program, "txRelWidth");
+    txRelHeightLoc = glGetUniformLocation(program, "txRelHeight");
+    txRelXOffsLoc = glGetUniformLocation(program, "txRelXOffs");
+    txRelYOffsLoc = glGetUniformLocation(program, "txRelYOffs");
+}
+TexOffsLocations::TexOffsLocations() {}
+
 Program::Program(resources::VertexShader &vertexShader_,
                  resources::FragmentShader &fragmentShader_) : vertexShader {vertexShader_}, fragmentShader {fragmentShader_} {
-  program = glCreateProgram();
-  glAttachShader(program, vertexShader.shader);
-  glAttachShader(program, fragmentShader.shader);
-  glLinkProgram(program);
+    program = glCreateProgram();
+    glAttachShader(program, vertexShader.shader);
+    glAttachShader(program, fragmentShader.shader);
+    glLinkProgram(program);
 
-  int  success;
-  char infoLog[512];
-  glGetProgramiv(program, GL_LINK_STATUS, &success);
-  if(!success)
-  {
-    glGetProgramInfoLog(program, 512, NULL, infoLog);
-    throw resources::ShaderCompilationError(std::string("program error: ") + infoLog);
-  }
+    int  success;
+    char infoLog[512];
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
+    if(!success)
+    {
+        glGetProgramInfoLog(program, 512, NULL, infoLog);
+        throw resources::ShaderCompilationError(std::string("program error: ") + infoLog);
+    }
+
+    locations = TexOffsLocations(program);
 
 };
-
-void Program::SetInt(const std::string &name, int value) const { 
-  glUniform1i(glGetUniformLocation(program, name.c_str()), value); 
-}
 
 void Program::Submit(uint64_t _view) {
-  glUseProgram(program);
+    glUseProgram(program);
 };
 Program::~Program() {
-  // bgfx::destroy(handle);
+    // bgfx::destroy(handle);
 }
 }
 }

@@ -26,8 +26,7 @@ public:
     0,  1,  3,
     1,  2,  3,
   };
-  origami::components::Program program;
-  origami::graphics::PosTexcoordNormalVertexContainer container = origami::graphics::PosTexcoordNormalVertexContainer(std::vector(&verticies[0], &verticies[4]), triangles, program);
+  origami::graphics::PosTexcoordNormalVertexContainer container = origami::graphics::PosTexcoordNormalVertexContainer(std::vector(&verticies[0], &verticies[4]), triangles);
   origami::components::Transform transform;
   origami::resources::Texture& texture;
   origami::graphics::TextureSampler sampler;
@@ -39,9 +38,9 @@ public:
   
   // ~Sprite() = default;
 
-  Sprite(origami::resources::Texture& texture, unsigned int textureUnit, const char* uniformName, origami::components::Program program);
+  Sprite(origami::resources::Texture& texture, unsigned int textureUnit, const char* uniformName);
 
-  void Submit(graphics::Renderer& renderer);
+  void Submit(graphics::Renderer& renderer, components::Program program);
 };
 }
 }
