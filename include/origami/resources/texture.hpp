@@ -7,6 +7,7 @@
 #include <exception>
 #include <string>
 #include <filesystem>
+#include <origami/resources/textureInterface.hpp>
 
 // namespace graphics {
 // class TextureSampler;
@@ -14,7 +15,7 @@
 
 namespace origami {
 namespace resources {
-class Texture {
+class Texture : public TextureInterface {
   unsigned int texture;
 public:
   // bgfx::TextureHandle handle;
@@ -36,6 +37,7 @@ public:
   TextureCompilationError(std::string err_);
   const char* what() const noexcept override;
 };
+
 }
 }
 

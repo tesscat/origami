@@ -121,6 +121,8 @@ public:
    * @brief Uncaptures the cursor
    */
   void UncaptureCursor();
+
+  void SetVsync(bool on);
   
   // Read-only
   bool resizable = false;

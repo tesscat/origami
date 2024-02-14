@@ -44,6 +44,8 @@ public:
    * @brief Binds the texture (you need to bind all the TxOffsLocations yourself!)
    */
     void BindRaw();
+
+    void Activate();
     
     // /**
     //  * @brief Binds the texture and sets the relevant shader uniforms

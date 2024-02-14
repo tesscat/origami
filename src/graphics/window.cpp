@@ -120,6 +120,11 @@ void Window::UncaptureCursor() {
   glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
+void Window::SetVsync(bool on) {
+    ActivateContext();
+    glfwSwapInterval(on);
+}
+
 Window::~Window() {
   // remember, handle is nullable
   // TODO: does glfwDestroyWindow do null checks?

@@ -1,10 +1,10 @@
 // #include <bgfx/bgfx.h>
 #include "origami/components/program.hpp"
+#include "origami/log.hpp"
 #include <filesystem>
 #include <origami/resources/texture.hpp>
 #include <fstream>
 #include <vector>
-#define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 #include <glad/gl.h>
 
@@ -24,6 +24,7 @@ Texture::Texture(std::filesystem::path filePath, std::string type_) noexcept(fal
     int width, height, nrChannels;
     // stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     uint8_t* data = stbi_load(filePath.c_str(), &width, &height, &nrChannels, 0);
+    INFO("classic nrChannels {}", nrChannels);
     if (!data) {
         throw TextureCompilationError(filePath.string() + " did not load!");
     }

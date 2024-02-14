@@ -7,6 +7,8 @@
 namespace origami::resources {
 SuperTexture::SuperTexture(int bWidth_, int bHeight_, int bX_, int bY_) : bX{bX_}, bY{bY_}, bHeight{bHeight_}, bWidth{bWidth_}, blocksCount{bX_*bY_} {
     blocks = std::vector<bool>(bX*bY, false);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glGenTextures(1, &texHandle);
     glBindTexture(GL_TEXTURE_2D, texHandle);
     fullWidth = bWidth * bX;
@@ -40,6 +42,10 @@ void SuperTexture::Deallocate(int id) {
 
 void SuperTexture::BindRaw() {
     glBindTexture(GL_TEXTURE_2D, texHandle);
+}
+
+void SuperTexture::Activate() {
+    glActiveTexture(texHandle);
 }
 
 void SuperTexture::Bind(int x, int y, components::Program program) {

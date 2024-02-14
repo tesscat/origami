@@ -3,10 +3,13 @@
 
 // #include <origami/graphics/dyntexturesampler.hpp>
 // #include <bgfx/bgfx.h>
+#include "glad/gl.h"
 #include "origami/components/program.hpp"
 #include "origami/resources/superTexture.hpp"
+#include "origami/resources/textureInterface.hpp"
 #include <cstdint>
 #include <exception>
+#include <memory>
 #include <string>
 #include <filesystem>
 #include <vector>
@@ -18,15 +21,19 @@
 
 namespace origami {
 namespace resources {
-class DynTexture {
-    SuperTexture& super;
+class DynTexture : public TextureInterface {
     int xoffsb, yoffsb;
 public:
-    std::vector<ColourBGRA32> data;
+    ColourBGRA32* data;
     int height, width;
+    GLuint texture;
     // bgfx::DynTextureHandle handle;
-    DynTexture(SuperTexture& super, int height, int width) noexcept(false);
+    DynTexture(int height, int width) noexcept(false);
+    DynTexture(std::filesystem::path filePath);
     ~DynTexture();
+
+    DynTexture(DynTexture&) = delete;
+    DynTexture(DynTexture&&) = delete;
 
     void Refresh();
     void Submit(components::Program program);
