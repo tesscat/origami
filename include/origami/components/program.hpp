@@ -10,6 +10,8 @@ struct TexOffsLocations {
     unsigned int txRelYOffsLoc;
     unsigned int txRelWidthLoc;
     unsigned int txRelHeightLoc;
+    unsigned int txPxTexWidth;
+    unsigned int txPxTexHeight;
 
     TexOffsLocations(unsigned int program);
     TexOffsLocations();

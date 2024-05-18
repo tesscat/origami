@@ -22,14 +22,16 @@
 namespace origami {
 namespace resources {
 class DynTexture : public TextureInterface {
-    int xoffsb, yoffsb;
+    int xoffsb, yoffsb, pX, pY;
+    float relW, relH, relXOffs, relYOffs;
 public:
-    ColourBGRA32* data;
+    std::shared_ptr<SuperTexture> super;
+    std::vector<ColourBGRA32> data;
     int height, width;
-    GLuint texture;
+    // GLuint texture;
     // bgfx::DynTextureHandle handle;
-    DynTexture(int height, int width) noexcept(false);
-    DynTexture(std::filesystem::path filePath);
+    DynTexture(int height, int width, std::shared_ptr<SuperTexture> super);
+    DynTexture(std::filesystem::path filePath, std::shared_ptr<SuperTexture> super);
     ~DynTexture();
 
     DynTexture(DynTexture&) = delete;

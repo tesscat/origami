@@ -15,13 +15,7 @@ TextureSampler::~TextureSampler() {
 void TextureSampler::SetTexture() {
   // bgfx::setTexture(textureUnit, uniformHandle, texture.handle);
 }
-// TextureSampler::TextureSampler(TextureSampler&& sampler) : texture {sampler.texture}, textureUnit {sampler.textureUnit}, uniformHandle {sampler.uniformHandle} {
-//   sampler.uniformHandle = BGFX_INVALID_HANDLE;
-//   sampler.live = false;
-// };
-// TextureSampler::TextureSampler(const TextureSampler& sampler) : texture {sampler.texture}, textureUnit {sampler.textureUnit}, uniformHandle {sampler.uniformHandle} {
-//   sampler.uniformHandle = BGFX_INVALID_HANDLE;
-// };
+
 TextureSampler& TextureSampler::operator=(TextureSampler&& other) {
   if (this != &other) {
     texture = other.texture;

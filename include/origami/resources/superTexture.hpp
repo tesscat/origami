@@ -9,11 +9,11 @@
 namespace origami::resources {
 class SuperTexture {
     std::vector<bool> blocks;
+public:
     int bX, bY;
     int fullWidth, fullHeight;
     float relWidth, relHeight;
     int blocksCount;
-public:
     GLuint texHandle;
     int bWidth;
     int bHeight;
@@ -26,6 +26,8 @@ public:
    * @param blockxY How many blocks tall the super-tex should be
    */
     SuperTexture(int blockWidth, int blockHeight, int blocksX, int blockxY);
+    SuperTexture(SuperTexture&) =delete;
+    SuperTexture(SuperTexture&&) =delete;
 
     /**
    * @brief Allocate a texture

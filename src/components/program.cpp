@@ -10,6 +10,8 @@ TexOffsLocations::TexOffsLocations(unsigned int program) {
     txRelHeightLoc = glGetUniformLocation(program, "txRelHeight");
     txRelXOffsLoc = glGetUniformLocation(program, "txRelXOffs");
     txRelYOffsLoc = glGetUniformLocation(program, "txRelYOffs");
+    txPxTexWidth = glGetUniformLocation(program, "txPxTexWidth");
+    txPxTexHeight = glGetUniformLocation(program, "txPxTexHeight");
 }
 TexOffsLocations::TexOffsLocations() {}
 

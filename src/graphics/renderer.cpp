@@ -1,8 +1,10 @@
 #include "origami/components/program.hpp"
 #include "origami/log.hpp"
+#include "origami/resources/shader.hpp"
 #include "origami/resources/texture.hpp"
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/trigonometric.hpp>
+#include <stdexcept>
 #include <string>
 #include <origami/graphics/window.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -22,91 +24,70 @@ RGBA::RGBA(float R_, float G_, float B_, float A_) : R{R_}, G{G_}, B{B_}, A{A_} 
 
 
 // constructor delegateion woooooooo
-Renderer::Renderer(Window& window_) : Renderer(window_, RGBA(1.0, 1.0, 1.0, 1.0)) {}
-Renderer::Renderer(Window& window_, RGBA clearColour_) : Renderer(window_, clearColour_, 0) {}
-Renderer::Renderer(Window& window_, RGBA clearColour_, uint64_t viewId_): window {window_}, clearColour {clearColour_}, viewId {viewId_} {
-  glfwMakeContextCurrent(window.handle);
-  if (!gladLoadGL(glfwGetProcAddress)) {
-    throw "No glad <3";
-  }
+Renderer::Renderer(Window& window, float width, float height) : Renderer(window, width, height, RGBA(1.0, 0.5, 1.0, 1.0)) {}
+Renderer::Renderer(Window& window, float width, float height, RGBA clearColour_) : Renderer(window, width, height, clearColour_, 0) {}
+Renderer::Renderer(Window& window, float width_, float height_, RGBA clearColour_, uint64_t viewId_): width{width_}, height{height_}, clearColour {clearColour_}, viewId {viewId_} {
+    glfwMakeContextCurrent(window.handle);
+    if (!gladLoadGL(glfwGetProcAddress)) {
+        throw "No glad <3";
+    }
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    // texture version (default)
+    glGenTextures(1, &colourAttachment);
+    glBindTexture(GL_TEXTURE_2D, colourAttachment);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-  // proj = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-  // proj = glm::ortho();
-  // TODO: should put in clear??
-  glEnable(GL_DEPTH_TEST); 
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colourAttachment, 0);
 
-  SetViewport();
-  Clear();
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        throw std::runtime_error("Failed to create a complete FBO");
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer::SetProjPerspective(float fov, float aspect_ratio, float near_clip, float far_clip) {
-  proj = glm::perspective(fov, aspect_ratio, near_clip, far_clip);
+    proj = glm::perspective(fov, aspect_ratio, near_clip, far_clip);
 }
-void Renderer::SetProjOrtho(float width, float height, float near_clip, float far_clip) {
-  proj = glm::ortho(-width/2.0f, width/2.0f, height/2.0f, -height/2.0f, near_clip, far_clip);
+void Renderer::SetProjOrtho(float width_, float height_, float near_clip, float far_clip) {
+    proj = glm::ortho(-width_/2.0f, width_/2.0f, height_/2.0f, -height_/2.0f, near_clip, far_clip);
 }
 
 void Renderer::Clear() {
-  glClearColor(clearColour.R, clearColour.G, clearColour.B, clearColour.A);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(clearColour.R, clearColour.G, clearColour.B, clearColour.A);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Renderer::SetViewport() {
-  glViewport(0, 0, window.width, window.height);
-}
-//
-// void Renderer::Render(abilities::Renderable& renderable, components::Program& program) {
-//   renderable.Submit(viewId, program);
-// }
-
-void Renderer::Frame(std::vector<std::reference_wrapper<origami::components::Program>> programs) {
-  // camPos.Calculate();
-  
-  // INFO("camera: {}/{}/{} {}/{}/{} {}/{}/{}", camPos.x, camPos.y, camPos.z, camFront.x, camFront.y, camFront.z, camUp.x, camUp.y, camUp.z);
-  glm::mat4 view = glm::lookAt(camPos, camFront + camPos, camUp);
-  // view = glm::translate(view, -camPos);
-  // view = glm::rotate(view, -camFront[0], glm::vec3(1.0, 0.0, 0.0));
-  // view = glm::rotate(view, -camFront[1], glm::vec3(0.0, 1.0, 0.0));
-  // view = glm::rotate(view, -camFront[2], glm::vec3(0.0, 0.0, 1.0));
-  // view *= -1.0f;
-  for (origami::components::Program program: programs) {
-    int loc = glGetUniformLocation(program.program, "view");
-    glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(view));
-    loc = glGetUniformLocation(program.program, "proj");
-    // proj = glm::scale(glm::mat4(1.0f), glm::vec3(0.9f));
-    // SetProjOrtho();
-    SetProjPerspective();
-    glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(proj));
-    // loc = glGetUniformLocation(program.program, "camPos");
-    // glUniformVec3fv(loc, 1, GL_FALSE, glm::value_ptr(proj));
-  }
-  // Clear();
+void Renderer::Bind() {
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glEnable(GL_DEPTH_TEST); 
 }
 
-// bx::Vec3 Renderer::ScreenCoordsToWorldSpace(float x, float y, float depth) {
-//   // https://stackoverflow.com/questions/7692988/opengl-math-projecting-screen-space-to-world-space-coords
-//
-//   // TODO: per-frame calc cacheing?
-//   // get the inverse matrix
-//   float view_x_proj[16];
-//   bx::mtxMul(view_x_proj, view, proj);
-//   bx::mtxInverse(inverse_view_proj, view_x_proj);
-//
-//   // apply it
-//   float pos[4] = {x, y, depth, 1.0};
-//   float res[4];
-//   bx::vec4MulMtx(res, pos, inverse_view_proj);
-//
-//   // divide it all through by w
-//   res[0] /= res[3];
-//   res[1] /= res[3];
-//   res[2] /= res[3];
-//
-//   return {res[0], res[1], res[2]};
-// }
+void Renderer::PreFrame(std::vector<std::reference_wrapper<origami::components::Program>> programs) {
+    Bind();
+    Clear();
+    glViewport(0, 0, width, height);
+
+    glm::mat4 view = glm::lookAt(camPos, camFront + camPos, camUp);
+
+    for (origami::components::Program program: programs) {
+        int loc = glGetUniformLocation(program.program, "view");
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(view));
+        loc = glGetUniformLocation(program.program, "proj");
+        SetProjPerspective();
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(proj));
+    }
+}
+
+void Renderer::FinalizeFrame(Window& window, int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1) {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+    glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+}
 
 Renderer::~Renderer() {
-  // bgfx::shutdown();
+    glDeleteFramebuffers(1, &fbo);
 }
 } // namespace graphics
-}
+} // namespace origami

@@ -56,6 +56,8 @@ void SuperTexture::Bind(int x, int y, components::Program program) {
     glUniform1f(program.locations.txRelYOffsLoc, relYOffs);
     glUniform1f(program.locations.txRelWidthLoc, relWidth);
     glUniform1f(program.locations.txRelHeightLoc, relHeight);
+    glUniform1f(program.locations.txPxTexWidth, bWidth*bX);
+    glUniform1f(program.locations.txPxTexHeight, bHeight*bY);
 }
 
 }
