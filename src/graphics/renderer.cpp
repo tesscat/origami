@@ -75,7 +75,6 @@ void Renderer::PreFrame(std::vector<std::reference_wrapper<origami::components::
         int loc = glGetUniformLocation(program.program, "view");
         glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(view));
         loc = glGetUniformLocation(program.program, "proj");
-        SetProjPerspective();
         glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(proj));
     }
 }
