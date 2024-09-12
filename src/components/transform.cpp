@@ -23,10 +23,10 @@ void Transform::Calculate() {
 }
 
 void Transform::Apply(origami::components::Program program) {
-  unsigned int transLoc = glGetUniformLocation(program.program, "transform");
+  // unsigned int transLoc = glGetUniformLocation(program.program, "transform");
   // trans = glm::mat4(1.0f);
   // trans = glm::translate(trans, glm::vec3(0.1f, 0.1f, 0.0f));
-  glUniformMatrix4fv(transLoc, 1, GL_FALSE, glm::value_ptr(trans));
+  glUniformMatrix4fv(program.locations.transform, 1, GL_FALSE, glm::value_ptr(trans));
   // Calculate();
   // bgfx::setTransform(Calculate().data());
 }

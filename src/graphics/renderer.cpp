@@ -69,14 +69,19 @@ void Renderer::PreFrame(std::vector<std::reference_wrapper<origami::components::
     Clear();
     glViewport(0, 0, width, height);
 
-    glm::mat4 view = glm::lookAt(camPos, camFront + camPos, camUp);
+    view = glm::lookAt(camPos, camFront + camPos, camUp);
 
-    for (origami::components::Program program: programs) {
-        int loc = glGetUniformLocation(program.program, "view");
-        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(view));
-        loc = glGetUniformLocation(program.program, "proj");
-        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(proj));
-    }
+    // for (origami::components::Program program: programs) {
+    //     int loc = glGetUniformLocation(program.program, "view");
+    //     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(view));
+    //     loc = glGetUniformLocation(program.program, "proj");
+    //     glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(proj));
+    // }
+}
+
+void Renderer::Apply(origami::components::Program& program) {
+    glUniformMatrix4fv(program.locations.view, 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(program.locations.proj, 1, GL_FALSE, glm::value_ptr(proj));
 }
 
 void Renderer::FinalizeFrame(Window& window, int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1) {

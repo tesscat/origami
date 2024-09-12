@@ -30,7 +30,7 @@ class Renderer {
     // bx::Vec3 at = {0, 0, 0};
     // bx::Vec3 eye = {0, 0, -5};
     // glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 proj;
+    glm::mat4 proj, view;
     unsigned int fbo;
     unsigned int colourAttachment, depthStencilAttachment;
     float width, height;
@@ -57,6 +57,8 @@ public:
     void PreFrame(std::vector<std::reference_wrapper<origami::components::Program>> programs);
     void FinalizeFrame(Window& window, int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1);
     inline void FinalizeFrame(Window& window) {FinalizeFrame(window, 0, 0, width, height, 0, 0, window.width, window.height);}
+    // Sets view + projection matrixes for a program
+    void Apply(origami::components::Program& program);
     void Bind();
 
     // bx::Vec3 ScreenCoordsToWorldSpace(float x, float y, float depth);

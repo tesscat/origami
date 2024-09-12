@@ -1,3 +1,4 @@
+#include "origami/resources/shader.hpp"
 #include <origami/components/program.hpp>
 #include <glad/gl.h>
 #include <origami/log.hpp>
@@ -12,6 +13,9 @@ TexOffsLocations::TexOffsLocations(unsigned int program) {
     txRelYOffsLoc = glGetUniformLocation(program, "txRelYOffs");
     txPxTexWidth = glGetUniformLocation(program, "txPxTexWidth");
     txPxTexHeight = glGetUniformLocation(program, "txPxTexHeight");
+    proj = glGetUniformLocation(program, "proj");
+    view = glGetUniformLocation(program, "view");
+    transform = glGetUniformLocation(program, "transform");
 }
 TexOffsLocations::TexOffsLocations() {}
 
@@ -35,7 +39,7 @@ Program::Program(resources::VertexShader &vertexShader_,
 
 };
 
-void Program::Submit(uint64_t _view) {
+void Program::Submit() {
     glUseProgram(program);
 };
 Program::~Program() {

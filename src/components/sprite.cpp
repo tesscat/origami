@@ -6,15 +6,17 @@
 
 namespace origami {
 namespace components {
-Sprite::Sprite(std::shared_ptr<origami::resources::TextureInterface> texture_, unsigned int textureUnit, const char* uniformName) : texture {texture_} {}
+Sprite::Sprite(std::shared_ptr<origami::resources::TextureInterface> texture_) : texture {texture_} {}
 
 void Sprite::Submit(graphics::Renderer& renderer, components::Program program) {
-  texture->Submit(program);
-  program.Submit(renderer.viewId);
-  transform.Apply(program);
-  // transform.Apply();
-  container.SetBuffers();
-  // sampler.SetTexture();
+    program.Submit();
+    texture->Submit(program);
+    transform.Apply(program);
+    renderer.Apply(program);
+    // Set view/proj uniforms
+    // transform.Apply();
+    container.SetBuffers();
+    // sampler.SetTexture();
 }
 
 // Sprite& Sprite::operator=(Sprite&& other) {
