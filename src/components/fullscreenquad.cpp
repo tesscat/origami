@@ -20,9 +20,9 @@ void FullScreenQuad::Submit(graphics::Renderer& renderer, components::Program pr
     // Set view/proj uniforms
     // renderer.Apply(program);
     // require identity transforms 
-    glUniformMatrix4fv(program.locations.view, 1, GL_FALSE, idptr);
-    glUniformMatrix4fv(program.locations.proj, 1, GL_FALSE, idptr);
-    glUniformMatrix4fv(program.locations.transform, 1, GL_FALSE, idptr);
+    // glUniformMatrix4fv(program.locations.view, 1, GL_FALSE, idptr);
+    // glUniformMatrix4fv(program.locations.proj, 1, GL_FALSE, idptr);
+    // glUniformMatrix4fv(program.locations.transform, 1, GL_FALSE, idptr);
     container.SetBuffers();
 }
 }
